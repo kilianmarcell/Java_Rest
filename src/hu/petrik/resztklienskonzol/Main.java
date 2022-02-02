@@ -2,19 +2,19 @@ package hu.petrik.resztklienskonzol;
 
 import jdk.swing.interop.DragSourceContextWrapper;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class Main {
 
     public static void main(String[] args) {
         String url = "http://localhost/film_db_rest/api/film";
         try {
+            Film film = new Film(0, "asd", "Teszt", 121, 7);
+            filmHozzaadasa(url, film);
             osszesFilmKiirasa(url);
         } catch (IOException e) {
             e.printStackTrace();
@@ -34,5 +34,16 @@ public class Main {
         }
         br.close();
         is.close();
+    }
+
+    public static void filmHozzaadasa(String url, Film film) throws IOException {
+        URL urlObject = new URL(url);
+        HttpURLConnection conn = (HttpURLConnection) urlObject.openConnection();
+        conn.setDoOutput(true);
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-type", "application/json");
+        conn.setRequestProperty("Accept", "application/json");
+        OutputStream os = conn.getOutputStream();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
     }
 }
